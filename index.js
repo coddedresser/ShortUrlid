@@ -1,9 +1,12 @@
 const express=require('express');
 const path=require('path');
+const cookieParser=require('cookie-parser');
 const URL =require('./models/url.js');
 const app=express();
+const {restrictToLoggedinuserOnly,checkAuth}=require('./middlewares/auth.js');
 const connectToMongoDB=require('./connet.js');
 
+const userRoute=require('./routers/user.js');
 const urlRoute=require('./routers/url');
 const staticRoute=require('./routers/staticRouter.js');
 
@@ -17,6 +20,7 @@ connectToMongoDB(MongoUrl).then(()=>console.log('mongoDB Connected'));
 //Middlewares
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
+app.use(cookieParser());
 
 //Server Side Rendering
 app.set("view engine","ejs");
@@ -24,8 +28,9 @@ app.set("views",path.resolve("./views"));
 
 
 //Routes
-app.use('/url',urlRoute);
-app.use('/',staticRoute);
+app.use('/url',restrictToLoggedinuserOnly,urlRoute);
+app.use('/user',userRoute);
+app.use('/',checkAuth,staticRoute);
 
 
 
