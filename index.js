@@ -38,17 +38,33 @@ app.post('/logout', (req, res) => {
 
 
 
-app.get('/url/:shortId',async (req,res)=>{
-    const shortId=req.params.shortId;
-    const entry=await URL.findOneAndUpdate({
-        shortId
-    },{$push:{
-        visitHistory: {
-            timestamp:Date.now()
+app.get('/url/:shortId', async (req, res) => {
+  const shortId = req.params.shortId;
+
+  try {
+    const entry = await URL.findOneAndUpdate(
+      { shortId },
+      {
+        $push: {
+          visitHistory: {
+            timestamp: Date.now()
+          }
         }
-    }});
-    res.redirect(entry.redirectURL);
-})
+      },
+      { new: true } // return the updated document
+    );
+
+    if (!entry) {
+      return res.status(404).send("Short URL not found");
+    }
+
+    return res.redirect(entry.redirectURL);
+
+  } catch (err) {
+    console.error("Redirect Error:", err);
+    return res.status(500).send("Internal Server Error");
+  }
+});
 
 app.listen(PORT,()=>console.log(`Server started at PORT:${PORT}`));
 
