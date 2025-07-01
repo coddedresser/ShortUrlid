@@ -31,6 +31,10 @@ app.set("views",path.resolve("./views"));
 app.use('/url',restrictToLoggedinuserOnly,urlRoute);
 app.use('/user',userRoute);
 app.use('/',checkAuth,staticRoute);
+app.post('/logout', (req, res) => {
+  res.clearCookie('uid'); 
+  res.redirect('login');
+});
 
 
 
