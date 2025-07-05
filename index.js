@@ -3,7 +3,7 @@ const path=require('path');
 const cookieParser=require('cookie-parser');
 const URL =require('./models/url.js');
 const app=express();
-const {restrictToLoggedinuserOnly,checkAuth}=require('./middlewares/auth.js');
+const {checkForAuthentication,restrictTo}=require('./middlewares/auth.js');
 const connectToMongoDB=require('./connet.js');
 
 const userRoute=require('./routers/user.js');
@@ -21,6 +21,7 @@ connectToMongoDB(MongoUrl).then(()=>console.log('mongoDB Connected'));
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use(cookieParser());
+app.use(checkForAuthentication);
 
 //Server Side Rendering
 app.set("view engine","ejs");
@@ -28,9 +29,9 @@ app.set("views",path.resolve("./views"));
 
 
 //Routes
-app.use('/url',restrictToLoggedinuserOnly,urlRoute);
+app.use('/url',restrictTo(['NORMAL','ADMIN']),urlRoute);
 app.use('/user',userRoute);
-app.use('/',checkAuth,staticRoute);
+app.use('/',staticRoute);
 app.post('/logout', (req, res) => {
   res.clearCookie('uid'); 
   res.redirect('login');
