@@ -14,7 +14,7 @@ const staticRoute=require('./routers/staticRouter.js');
 const PORT=3000;
 
 //MongoDB Connect
-const MongoUrl="";
+const MongoUrl=""; //mongodbURL
 connectToMongoDB(MongoUrl).then(()=>console.log('mongoDB Connected'));
 
 //Middlewares
