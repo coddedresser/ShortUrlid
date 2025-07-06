@@ -1,5 +1,5 @@
 const jwt=require('jsonwebtoken');
-const SECRETKEY="jdnvklwnligvnelbm"
+const SECRETKEY="" //enter secret key
 function setUser(user){
     return jwt.sign({
         _id:user._id,
