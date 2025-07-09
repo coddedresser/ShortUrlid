@@ -8,7 +8,7 @@ const userRoute = require('../routers/user.js');
 const urlRoute = require('../routers/url.js');
 const staticRoute = require('../routers/staticRouter.js');
 const serverless = require('serverless-http');
-
+require('dotenv').config();
 const app = express();
 
 // MongoDB Connect (make sure MongodbURL is in env vars on Vercel)
